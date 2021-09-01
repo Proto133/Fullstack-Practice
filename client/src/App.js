@@ -1,29 +1,45 @@
 import React, { useState } from 'react'
 import './App.css';
 import Header from './components/Header'
-import TodoForm from './components/TodoForm'
+import ToDoForm from './components/ToDoForm'
 import Container from './components/Container'
 
 export default function App() {
-    const [todo, setTodo] = useState({ name: '', completed: false })
-    const [todos, setTodos] = useState([
-        { id: 1, name: "Go grocery shopping", completed: false },
-        { id: 2, name: "Buy snacks", completed: true },
+    const [toDo, setToDo] = useState({ task: '', completed: false })
+    const [toDos, setToDos] = useState([
+        { id: 1, task: "Go grocery shopping", completed: false },
+        { id: 2, task: "Buy snacks", completed: true },
     ])
+    let newTaskId = toDos.length +1
 
-    function handleTodo(event) {
-        setTodo({...todo, name: event.target.value })
+ 
+    // useEffect(() => {console.log(toDo.task)})
+    const handleToDo = ({id, value})=> {
+               setToDo({...toDo, id:id, task: value})
     }
 
-    function handleDelete(id) {
-        console.log('delete')
-            // setTodos(updatedTodos)
-    }
+    function handleDelete(e) {
+        let toDosLocal = [...toDos]
+        const val = e.target.parentElement.attributes[0].value
+        let targetToDo = toDosLocal.filter(toDo => {
+            let t
+            if (toDo.id == val){ 
+                return t = toDo
+            }
+            return t
+        })
+        let index = toDosLocal.indexOf(targetToDo[0])
+        toDosLocal.splice(index,1)
+
+        return setToDos(toDosLocal)
+  };
+    
+
 
     function handleSubmit(event) {
         event.preventDefault()
-        setTodos([...todos, todo])
-        setTodo({ name: '', completed: false })
+        setToDos([...toDos, toDo])
+        setToDo({ task: '', completed: false })
     }
 
     function handleEdit(id) {
@@ -33,25 +49,26 @@ export default function App() {
     }
     //https://www.robinwieruch.de/react-update-item-in-list
     function toggleStatus(id) {
-        const updatedTodos = todos.map(todo => {
-            if (todo.id === id) {
-                return {...todo, completed: !todo.completed }
+        const updatedToDos = toDos.map(toDo => {
+            if (toDo.id === id) {
+                return {...toDo, completed: !toDo.completed }
             } else {
-                return todo
+                return toDo
             }
         })
-        setTodos(updatedTodos)
+        setToDos(updatedToDos)
     }
 
     return ( 
     <div className="container">
      <Header />
-         <TodoForm 
-         handleTodo={ handleTodo } 
-         handleSubmit={ handleSubmit } 
-         todo={ todo } />
+         <ToDoForm 
+         handleToDo={handleToDo} 
+         handleSubmit={handleSubmit} 
+         toDo={toDo}
+         newTaskId={newTaskId} />
          <Container 
-         todos={ todos } 
+         toDos={ toDos } 
          toggleStatus={ toggleStatus } 
          handleDelete={ handleDelete } 
          handleEdit={ handleEdit} />
